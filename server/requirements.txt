@@ -1,0 +1,11 @@
+black
+python-dotenv
+requests
+django
+djangorestframework
+django-cors-headers
+daphne
+channels
+channels-redis
+redis
+psycopg2-binary
