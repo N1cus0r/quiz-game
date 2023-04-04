@@ -1,3 +1,4 @@
+from datetime import timedelta
 from os import getenv
 from pathlib import Path
 from dotenv import load_dotenv
@@ -13,14 +14,19 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
+    "daphne",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    # External apps
     "rest_framework",
+    "rest_framework_simplejwt",
     "corsheaders",
+    # Internal apps
+    "users.apps.UsersConfig",
     "quiz.apps.QuizConfig",
 ]
 
@@ -54,6 +60,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "core.wsgi.application"
+ASGI_APPLICATION = "core.asgi.application"
 
 DATABASES = {
     "default": {
@@ -93,6 +100,23 @@ USE_TZ = False
 STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Custom User Model
+AUTH_USER_MODEL = "users.CustomUser"
+
+# REST Framework
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    )
+}
+
+# Simple JWT
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(hours=2),
+    # "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+}
 
 # CORS
 CORS_ALLOWED_ORIGINS = [getenv("CLIENT_HOST")]

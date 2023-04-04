@@ -2,8 +2,10 @@ black
 python-dotenv
 requests
 django
-djangorestframework
 django-cors-headers
+djangorestframework
+djangorestframework-simplejwt
+pyjwt
 daphne
 channels
 channels-redis
