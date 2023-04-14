@@ -30,7 +30,6 @@ class CreateGame(GameView):
         self.serializer = GameSerializer(data=request.data)
         if self.serializer.is_valid(raise_exception=True):
             if self.user_is_host(request):
-                print('GAME SAVED')
                 game = self.serializer.save()
                 return Response(
                     GameSerializer(game).data, status=status.HTTP_201_CREATED
