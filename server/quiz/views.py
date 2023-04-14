@@ -38,11 +38,11 @@ class CreateGame(GameView):
                 {"error": "User is not the host"}, status=status.HTTP_404_NOT_FOUND
             )
 
+
 class DeleteGame(GameView):
     def delete(self, request):
         serializer = GameRetrieveSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
-            game = serializer.validated_data['game']
+            game = serializer.validated_data["game"]
             game.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
-

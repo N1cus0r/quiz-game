@@ -42,7 +42,6 @@ class GameConsumer(AsyncWebsocketConsumer):
                 },
             )
 
-
     async def game_over(self, *args):
         await self.send(text_data=json.dumps({"event": "game_over"}))
 
