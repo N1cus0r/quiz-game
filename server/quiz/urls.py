@@ -4,7 +4,7 @@ from . import views
 app_name = "quiz"
 
 urlpatterns = [
-    path("create-game", views.CreateGame.as_view()),
-    path("get-game", views.GetGameState.as_view()),
-    path("delete-game", views.DeleteGame.as_view()),
+    path("get-game", views.GetGameState.as_view(), name='get-game'),
+    path("create-game", views.CreateGame.as_view(), name='create-game'),
+    path("delete-game", views.DeleteGame.as_view(), 'delete-game'),
 ]
