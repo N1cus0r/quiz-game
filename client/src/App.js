@@ -1,23 +1,21 @@
-import logo from './logo.svg';
-import './App.css';
+import AuthProvider from "./context/AuthProvider";
+import GameProvider from "./context/GameProvider";
+import RoomProvider from "./context/RoomProvider";
+import AppRouter from "./routing/AppRouter";
+import AppTheme from "./theme/AppTheme";
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <AppTheme>
+        <AuthProvider>
+          <RoomProvider>
+            <GameProvider>
+              <AppRouter />
+            </GameProvider>
+          </RoomProvider>
+        </AuthProvider>
+      </AppTheme>
     </div>
   );
 }

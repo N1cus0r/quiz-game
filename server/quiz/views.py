@@ -1,57 +1,49 @@
-from rest_framework.permissions import IsAuthenticated
+from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 
 from users.utils import Token
-from .serializers import RoomSerializer, RoomOperationSerializer
-from .models import Room, Participant
+from .serializers import GameSerializer, GameRetrieveSerializer
 
 
-class CreateRoom(APIView):
+class GameView(APIView):
     permission_classes = (IsAuthenticated,)
 
-    def post(self, request):
-        serializer = RoomSerializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            access_token = request.auth.token
-            user_id = Token.get_user_id_from_token(access_token)
-            queryset = Room.objects.filter(host_id=user_id)
-            if queryset.exists():
-                room = queryset[0]
-                room.max_participants = serializer.validated_data["max_participants"]
-                room.save(update_fields=["max_participants"])
-            else:
-                room = Room.objects.create(
-                    host_id=user_id,
-                    max_participants=serializer.validated_data["max_participants"],
-                )
-                Participant.objects.create(user_id=user_id, room=room)
-            return Response(RoomSerializer(room).data, status=status.HTTP_201_CREATED)
-
-
-class JoinRoom(APIView):
-    permission_classes = (IsAuthenticated,)
-
-    def put(self, request):
-        serializer = RoomOperationSerializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            access_token = request.auth.token
-            room_id = serializer.validated_data["id"]
-            user_id = Token.get_user_id_from_token(access_token)
-            Participant.objects.create(user_id=user_id, room_id=room_id)
-            room = Room.objects.get(pk=room_id)
-            return Response(RoomSerializer(room).data, status=status.HTTP_200_OK)
-
-
-class LeaveRoom(APIView):
-    permission_classes = (IsAuthenticated,)
-
-    def put(self, request):
+    def user_is_host(self, request):
+        validated_data = dict(self.serializer.validated_data)
         access_token = request.auth.token
         user_id = Token.get_user_id_from_token(access_token)
-        queryset = Participant.objects.filter(user_id=user_id)
-        if queryset.exists():
-            queryset.delete()
-            return Response(status=status.HTTP_200_OK)
-        return Response({"error": "User not in room"}, status=status.HTTP_404_NOT_FOUND)
+        return user_id == validated_data["room"].host_id
+
+
+class GetGameState(GameView):
+    def get(self, request):
+        serializer = GameRetrieveSerializer(data=request.query_params)
+        if serializer.is_valid(raise_exception=True):
+            game = serializer.validated_data["game"]
+            return Response(GameSerializer(game).data)
+
+
+class CreateGame(GameView):
+    def post(self, request):
+        self.serializer = GameSerializer(data=request.data)
+        if self.serializer.is_valid(raise_exception=True):
+            if self.user_is_host(request):
+                print('GAME SAVED')
+                game = self.serializer.save()
+                return Response(
+                    GameSerializer(game).data, status=status.HTTP_201_CREATED
+                )
+            return Response(
+                {"error": "User is not the host"}, status=status.HTTP_404_NOT_FOUND
+            )
+
+class DeleteGame(GameView):
+    def delete(self, request):
+        serializer = GameRetrieveSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            game = serializer.validated_data['game']
+            game.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+

@@ -25,7 +25,7 @@ class Command(BaseCommand):
             if not country_capital:
                 continue
             else:
-                country_capital = country_capital[0]
+                country_capital = country_capital[0].lower()
 
             game_type = choice([GameType.GUESS_CAPITAL, GameType.GUESS_FLAG])
             if game_type == GameType.GUESS_CAPITAL:

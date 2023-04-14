@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     "corsheaders",
     # Internal apps
     "users.apps.UsersConfig",
+    "rooms.apps.RoomsConfig",
     "quiz.apps.QuizConfig",
 ]
 
@@ -119,4 +120,12 @@ SIMPLE_JWT = {
 }
 
 # CORS
-CORS_ALLOWED_ORIGINS = [getenv("CLIENT_HOST")]
+CORS_ALLOW_ALL_ORIGINS = True
+
+# Django Channels
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {"hosts": [getenv("REDIS_HOST")]},
+    },
+}
