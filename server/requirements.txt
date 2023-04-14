@@ -11,3 +11,6 @@ channels
 channels-redis
 redis
 psycopg2-binary
+Faker
+pytest
+pytest-django
