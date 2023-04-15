@@ -14,23 +14,13 @@ This is an application with provides the ability to play create an participate i
 - Clone this repository using
 
 ```bash
-    git clone https://github.com/N1cus0r/crypto-monitor.git
+git clone https://github.com/N1cus0r/crypto-monitor.git
 ```
 
-- Build and run docker containers
+- Navigate to project directory
 
 ```bash
-docker-compose build
-
-docker-compose run
-```
-
-- Run migrations and generate some random questions
-
-```bash
-python manage.py migrate
-
-python manage.py generatequestions
+cd quiz-game
 ```
 
 - Start the containers and you are good to go
@@ -40,6 +30,3 @@ docker-compose up
 ```
 
 The application will be available on **localhost** or **127.0.0.1** and you don't have to specify the port.
-
-> **Note**
-> Games wont be created without generated questions
